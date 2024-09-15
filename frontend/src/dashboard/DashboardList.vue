@@ -2,7 +2,7 @@
 	<header class="sticky top-0 z-10 flex items-center justify-between bg-white px-5 py-2.5">
 		<PageBreadcrumbs class="h-7" :items="[{ label: 'Dashboards' }]" />
 		<div class="space-x-2.5">
-			<Button label="New Dashboard" variant="solid" @click="showDialog = true">
+			<Button v-if="isAdmin" label="New Dashboard" variant="solid" @click="showDialog = true">
 				<template #prefix>
 					<Plus class="h-4 w-4" />
 				</template>
@@ -33,6 +33,7 @@
 			<div
 				class="cursor-pointer text-sm font-light text-blue-500 hover:underline"
 				@click="showDialog = true"
+				v-if="isAdmin"
 			>
 				Create a new dashboard
 			</div>
@@ -65,6 +66,7 @@
 import PageBreadcrumbs from '@/components/PageBreadcrumbs.vue'
 import useDashboards from '@/dashboard/useDashboards'
 import settingsStore from '@/stores/settingsStore'
+import sessionStore from '@/stores/sessionStore'
 import { updateDocumentTitle } from '@/utils'
 import { Plus } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
@@ -72,7 +74,10 @@ import { useRoute, useRouter } from 'vue-router'
 import DashboardsGroup from './DashboardListGroup.vue'
 
 const settings = settingsStore().settings
-
+//osb
+const isAdmin = computed(()=>{
+	return sessionStore().user.is_admin
+})
 const dashboards = useDashboards()
 dashboards.reload()
 const sortedDashboards = computed(() => {
@@ -95,11 +100,16 @@ if (route.hash == '#new') {
 const newDashboardTitle = ref('')
 const router = useRouter()
 
+//osb
 async function createDashboard() {
-	const name = await dashboards.create(newDashboardTitle.value)
-	showDialog.value = false
-	newDashboardTitle.value = ''
-	router.push(`/dashboard/${name}`)
+		if(!isAdmin) {
+			return 
+		}
+		const name = await dashboards.create(newDashboardTitle.value)
+		showDialog.value = false
+		newDashboardTitle.value = ''
+		router.push(`/dashboard/${name}`)
+	
 }
 
 const pageMeta = ref({ title: 'Dashboards' })

@@ -1,6 +1,11 @@
 <script setup>
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
+import sessionStore from '@/stores/sessionStore'
 const dashboard = inject('dashboard')
+
+const isAdmin = computed(()=>{
+	return sessionStore().user.is_admin
+})
 </script>
 
 <template>
@@ -11,7 +16,7 @@ const dashboard = inject('dashboard')
 			}}
 		</div>
 		<div
-			v-if="!dashboard.editing"
+			v-if="!dashboard.editing && isAdmin"
 			class="cursor-pointer text-sm font-light text-blue-500 hover:underline"
 			@click="dashboard.edit"
 		>

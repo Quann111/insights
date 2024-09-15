@@ -261,8 +261,8 @@ export default function useDashboard(name) {
 		state.currentItem.query = useQuery(query)
 		state.currentItem.query.reload()
 	}
-
-	const edit = () => ((state.editing = true), (state.currentItem = undefined))
+//osb
+	const edit = () => ((state.editing = session.user.is_admin ? true : false), (state.currentItem = undefined))
 	const discardChanges = () => (
 		(state.editing = false), reload(), (state.currentItem = undefined)
 	)
