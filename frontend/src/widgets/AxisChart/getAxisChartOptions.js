@@ -141,6 +141,7 @@ function makeOptions(chartType, labels, datasets, options) {
                 lineHeight: 24,
                 interval: 0,  // Hiển thị tất cả nhãn
                 formatter: (value) => {
+                    // if (!isBarChart) return ''; // Nếu không phải dạng bar, không hiển thị nhãn
                     // Nếu chuỗi quá dài, chỉ hiển thị 4 từ đầu tiên và thêm dấu "..."
                     const words = value.split(' ');
                     if (words.length > 4) {
@@ -150,6 +151,7 @@ function makeOptions(chartType, labels, datasets, options) {
                     }
                 },
             },
+            
         },
         yAxis: datasets.map((dataset) => ({
             name: options.splitYAxis ? dataset.label : undefined,
@@ -192,7 +194,7 @@ function makeOptions(chartType, labels, datasets, options) {
             stack: options.stack ? 'stack' : null,
             label: {
                 position: 'top',
-                formatter: '{c}', // Hiển thị giá trị trên mỗi cột
+                formatter: isBarChart ? '{c}' : '', // Chỉ hiển thị giá trị trên cột nếu là biểu đồ bar
             },
         })),
         legend: {
